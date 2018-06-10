@@ -1,0 +1,15 @@
+{
+  "name": "miragesrc",
+  "version": "0.0.1",
+  "description": "Mirage Source in JavaScript",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rian Ruggles",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "socket.io": "^2.1.1"
+  }
+}

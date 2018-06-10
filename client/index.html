@@ -1,0 +1,74 @@
+<canvas id="ctx" width="1000" height="750" style="border:1px solid #000000;"></canvas>
+
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+<script>
+  
+
+  var bgGrass = new Image();
+  bgGrass.src = "img/grass.png";
+  
+  
+  var playerSprite = new Image();
+  playerSprite.src = "img/sprites/1.png";
+  
+  
+  
+  /*var spriteWidth  = 32,
+    spriteHeight = 32,
+    pixelsLeft   = 32,
+    pixelsTop    = 32,
+  ;*/
+  
+  var cx = 0; // context x
+  var cy = 0; // context y
+  var sx = 33; // sprite x
+  var sy = 0; // sprite y
+  var swidth = 33; // sprite width
+  var sheight = 37; // sprite height
+
+  var ctx = document.getElementById("ctx").getContext("2d");
+  ctx.font = '12px Arial';
+
+  var socket = io();
+  socket.on('newPositions', function(data){
+    ctx.clearRect(0,0,1000,750);
+    drawPattern();
+    for(var i = 0; i < data.length; i++)
+      //ctx.fillText('Yoca',data[i].x,data[i].y);
+      //ctx.drawImage(playerSprite,32,32,data[i].x,data[i].y);
+      
+      
+      ctx.drawImage(playerSprite,(Math.round(sx * data[i].pDir)),sy,swidth,sheight,data[i].x,data[i].y,96,96);
+
+  });
+  
+  
+  document.onkeydown = function(event){
+    if(event.keyCode === 68) // d
+      socket.emit('keyPress',{inputId:'right',state:true});
+    else if(event.keyCode === 65) // a
+      socket.emit('keyPress',{inputId:'left',state:true});
+    else if(event.keyCode === 87) // w
+      socket.emit('keyPress',{inputId:'up',state:true});
+    else if(event.keyCode === 83) // s
+      socket.emit('keyPress',{inputId:'down',state:true});
+  };
+  
+  document.onkeyup = function(event){
+    if(event.keyCode === 68) // d
+      socket.emit('keyPress',{inputId:'right',state:false});
+    else if(event.keyCode === 65) // a
+      socket.emit('keyPress',{inputId:'left',state:false});
+    else if(event.keyCode === 87) // w
+      socket.emit('keyPress',{inputId:'up',state:false});
+    else if(event.keyCode === 83) // s
+      socket.emit('keyPress',{inputId:'down',state:false});
+  };
+  
+  function drawPattern() {
+
+      ctx.fillStyle = ctx.createPattern(bgGrass, "repeat");
+      ctx.fillRect(0, 0, 1000, 750);
+  }
+</script>
