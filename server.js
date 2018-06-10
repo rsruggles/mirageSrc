@@ -28,13 +28,15 @@ var Player = function (id) {
     x:(1000/2)-(96/2),
     y:(750/2)-(96/2),
     id:id,
-    number:"" + Math.floor(10 * Math.random()),
+    number:"" + Math.floor(14 * Math.random()),
     pressingRight:false,
     pressingLeft:false,
     pressingUp:false,
     pressingDown:false,
-    maxSpd:5,
-    pDir:1,
+    maxSpd:4,
+    pDir:4,
+    pAnim:-1,
+    isMoving:false
   }
   self.updatePosition = function() {
     if(self.pressingRight) {
@@ -57,6 +59,15 @@ var Player = function (id) {
     }
       
   }
+  self.updateAnimation = function () {
+    if (self.pAnim === 0) {
+      self.pAnim = -1;
+    } else if (self.pAnim === -1) {
+      self.pAnim = 1;
+    } else if (self.pAnim === 1) {
+      self.pAnim = 0;
+    }
+  }
   return self;
 }
 
@@ -76,20 +87,21 @@ io.sockets.on('connection', function(socket){
   socket.on('keyPress', function(data){
     if(data.inputId === 'left'){
       player.pressingLeft = data.state;
-      //player.pDir = 9;
+      player.isMoving = data.state;
     }
     else if(data.inputId === 'right'){
       player.pressingRight = data.state;
-      //player.pDir = 6;
+      player.isMoving = data.state;
     }
     else if(data.inputId === 'up'){
       player.pressingUp = data.state;
-      //Player.pDir = 3;
+      player.isMoving = data.state;
     }
     else if(data.inputId === 'down'){
       player.pressingDown = data.state;
-      //player.pDir = 1;
+      player.isMoving = data.state;
     }
+    
   });
   
 });
@@ -107,7 +119,8 @@ setInterval(function(){
       x:player.x,
       y:player.y,
       number:player.number,
-      pDir:player.pDir
+      pDir:player.pDir,
+      pAnim:player.pAnim
     });
   }
   
@@ -117,3 +130,17 @@ setInterval(function(){
   }
   
 },1000/60);
+
+////////////////////////
+//   Main Anim Loop   //
+////////////////////////
+setInterval(function(){
+  for(var i in PLAYER_LIST){
+    var player = PLAYER_LIST[i];
+    if (player.isMoving) {
+      player.updateAnimation();
+    } else {
+      player.pAnim = 0;
+    }
+  }  
+},1000/10);

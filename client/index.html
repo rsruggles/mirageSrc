@@ -6,19 +6,10 @@
   
 
   var bgGrass = new Image();
-  bgGrass.src = "img/grass.png";
-  
+  bgGrass.src = "img/grass.png";  
   
   var playerSprite = new Image();
   playerSprite.src = "img/sprites/1.png";
-  
-  
-  
-  /*var spriteWidth  = 32,
-    spriteHeight = 32,
-    pixelsLeft   = 32,
-    pixelsTop    = 32,
-  ;*/
   
   var cx = 0; // context x
   var cy = 0; // context y
@@ -28,18 +19,19 @@
   var sheight = 37; // sprite height
 
   var ctx = document.getElementById("ctx").getContext("2d");
-  ctx.font = '12px Arial';
+  ctx.font = '30px Arial';
 
   var socket = io();
   socket.on('newPositions', function(data){
     ctx.clearRect(0,0,1000,750);
     drawPattern();
-    for(var i = 0; i < data.length; i++)
-      //ctx.fillText('Yoca',data[i].x,data[i].y);
-      //ctx.drawImage(playerSprite,32,32,data[i].x,data[i].y);
+    
+    for(var i = 0; i < data.length; i++) {      
+      //ctx.drawImage(playerSprite,32,32,data[i].x,data[i].y); 
+      playerSprite.src = "img/sprites/" + data[i].number + ".png";
+      ctx.drawImage(playerSprite,(sx * (data[i].pDir + data[i].pAnim)),sy,swidth,sheight,data[i].x,data[i].y,96,96);
+    }
       
-      
-      ctx.drawImage(playerSprite,(Math.round(sx * data[i].pDir)),sy,swidth,sheight,data[i].x,data[i].y,96,96);
 
   });
   
